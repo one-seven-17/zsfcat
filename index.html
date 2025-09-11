@@ -284,32 +284,9 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-        .glitch-text {
-            text-shadow: 2px 0 red, -2px 0 blue;
-            animation: glitch 1s infinite;
-        }
-        @keyframes glitch {
-            0% { text-shadow: 2px 0 red, -2px 0 blue; }
-            50% { text-shadow: -2px 0 red, 2px 0 blue; }
-            100% { text-shadow: 2px 0 red, -2px 0 blue; }
-        }
-        .blessed-text {
-            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ffdd00, 0 0 20px #ffdd00;
-        }
-        .protected-text {
-            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #00ff00, 0 0 20px #00ff00;
-        }
         .whisper-message {
             color: #aaa;
             font-style: italic;
-        }
-        .encrypted-text {
-            font-family: 'Courier New', monospace;
-            letter-spacing: 1px;
-            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: blur(0.7px);
         }
     </style>
     
@@ -404,12 +381,6 @@
                 <div class="command-item">
                     <span class="command-name">/unflip</span> - <span class="command-desc">Posts ┬─┬ ノ( ゜-゜ノ)</span>
                 </div>
-                <div class="command-item">
-                    <span class="command-name">/curse [user]</span> - <span class="command-desc">Encrypts the user's next message</span>
-                </div>
-                <div class="command-item">
-                    <span class="command-name">/bless [user]</span> - <span class="command-desc">Makes the user's next message glow</span>
-                </div>
             </div>
         </div>
         
@@ -452,8 +423,6 @@
         // New variables for command effects
         let nextMessageEffect = null;
         let whisperTarget = null;
-        let cursedUsers = {};
-        let blessedUsers = {};
         
         let donationAmount = 0;
         let phantomProvider = null;
@@ -463,33 +432,6 @@
 
         // Updated recipient wallet address
         const recipientAddress = "H5yWNDj9tKahs4B3RKxG4NrPYjkHqgjTkKkFRyQxCVA2";
-
-        // Caesar cipher encryption function
-        function caesarCipher(text, shift) {
-            let result = '';
-            for (let i = 0; i < text.length; i++) {
-                let char = text[i];
-                if (char.match(/[a-z]/i)) {
-                    const code = text.charCodeAt(i);
-                    // Uppercase letters
-                    if (code >= 65 && code <= 90) {
-                        char = String.fromCharCode(((code - 65 + shift) % 26) + 65);
-                    }
-                    // Lowercase letters
-                    else if (code >= 97 && code <= 122) {
-                        char = String.fromCharCode(((code - 97 + shift) % 26) + 97);
-                    }
-                }
-                result += char;
-            }
-            return result;
-        }
-
-        // Encrypt text with a random shift
-        function encryptText(text) {
-            const shift = Math.floor(Math.random() * 25) + 1; // Random shift between 1-25
-            return caesarCipher(text, shift);
-        }
 
         function setCookie(name, value, days) {
             const expires = new Date();
@@ -935,22 +877,6 @@
                 return true;
             }
             
-            // RPG-style commands
-            const rpgParts = command.split(' ');
-            if (rpgParts[0] === '/curse' && rpgParts.length === 2) {
-                const target = rpgParts[1];
-                cursedUsers[target] = true;
-                sendSystemMessage(`${username} curses ${target}! Their next message will be encrypted. 💀`, 'curse');
-                return true;
-            }
-            
-            if (rpgParts[0] === '/bless' && rpgParts.length === 2) {
-                const target = rpgParts[1];
-                blessedUsers[target] = true;
-                sendSystemMessage(`${username} blesses ${target}! Their next message will glow. ✨`, 'bless');
-                return true;
-            }
-            
             if (command === '/help') {
                 showHelpModal();
                 return true;
@@ -1127,10 +1053,6 @@
                         messageElement.innerHTML = `
                             <div class="system-message">${msg.text}</div>
                         `;
-                    } else if (msg.type === 'curse' || msg.type === 'bless') {
-                        messageElement.innerHTML = `
-                            <div class="moderator-message">${msg.text}</div>
-                        `;
                     } else {
                         messageElement.innerHTML = `
                             <div class="system-message">${msg.text}</div>
@@ -1153,18 +1075,6 @@
                         additionalClasses += ' glow-message';
                     } else if (msg.effect === 'rainbow') {
                         additionalClasses += ' rainbow-text';
-                    } else if (msg.effect === 'curse') {
-                        additionalClasses += ' glitch-text';
-                    } else if (msg.effect === 'bless') {
-                        additionalClasses += ' blessed-text';
-                    } else if (msg.effect === 'protect') {
-                        additionalClasses += ' protected-text';
-                    }
-                    
-                    // Handle encrypted messages from cursed users
-                    if (msg.encrypted) {
-                        displayText = encryptText(displayText);
-                        additionalClasses += ' encrypted-text';
                     }
                     
                     // Handle anonymous messages
@@ -1244,18 +1154,6 @@
                         messageData.whisper = true;
                         messageData.whisperTarget = whisperTarget;
                         whisperTarget = null;
-                    }
-                    
-                    // Check if user is cursed
-                    if (cursedUsers[username]) {
-                        messageData.encrypted = true;
-                        delete cursedUsers[username];
-                    }
-                    
-                    // Check if user is blessed
-                    if (blessedUsers[username]) {
-                        messageData.effect = 'glow';
-                        delete blessedUsers[username];
                     }
                     
                     await db.collection("messages").add(messageData);
