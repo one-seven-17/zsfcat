@@ -153,6 +153,7 @@
         }
         .donation-modal p {
             margin: 10px 0;
+            line-height: 1.4;
         }
         .donation-modal button {
             background: #333;
@@ -210,6 +211,7 @@
             border-radius: 4px;
             margin: 10px 0;
             font-size: 0.9em;
+            line-height: 1.5;
         }
         .wallet-connected {
             color: #4cc9f0;
@@ -250,6 +252,7 @@
         }
         .command-item {
             margin: 8px 0;
+            line-height: 1.4;
         }
         .command-name {
             color: #FFD700;
@@ -264,6 +267,41 @@
             text-align: center;
             margin-top: 15px;
             font-size: 0.9em;
+        }
+        
+        /* New styles for command effects */
+        .glow-message {
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ff4da6, 0 0 20px #ff4da6;
+        }
+        .rainbow-text {
+            background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow-animation 3s infinite;
+        }
+        @keyframes rainbow-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .glitch-text {
+            text-shadow: 2px 0 red, -2px 0 blue;
+            animation: glitch 1s infinite;
+        }
+        @keyframes glitch {
+            0% { text-shadow: 2px 0 red, -2px 0 blue; }
+            50% { text-shadow: -2px 0 red, 2px 0 blue; }
+            100% { text-shadow: 2px 0 red, -2px 0 blue; }
+        }
+        .blessed-text {
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ffdd00, 0 0 20px #ffdd00;
+        }
+        .protected-text {
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #00ff00, 0 0 20px #00ff00;
+        }
+        .whisper-message {
+            color: #aaa;
+            font-style: italic;
         }
     </style>
     
@@ -290,7 +328,7 @@
 
     <div class="overlay" id="overlay"></div>
     <div class="donation-modal" id="donation-modal">
-        <h3><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDIyQzE3LjUyMjggMjIgMjIgMTcuNTIyOCAyMiAxMkMyMiA2LjQ3NzE1IDE3LjUyMjggMiAxMiAyQzYuNDc3MTUgMiAyIDYuNDc3MTUgMiAxMkMyIDE3LjUyMjggNi40NzcxNSAyMiAxMiAyMloiIGZpbGw9IiM0QkE0RkYiLz4KPHBhdGggZD0iTTEyLjg4NTcgNi41ODU3MUMxMi44ODU3IDYuNTg1NzEgMTUuMDI4NiA3LjM0Mjg2IDEwLjAyODYgOS40ODcxNEMxNS4wMjg2IDExLjYzMTQgMTIuODg1NyAxMi4zODg2IDEyLjg4NTcgMTIuMzg4NkMxMi44ODU3IDEyLjM4ODYgMTAuNzQyOSAxMS42MzE0IDEwLjc0MjkgOS40ODcxNEMxMC43NDI5IDcuMzQyODYgMTIuODg1NyA2LjU4NTcxIDEyLjg4NTcgNi41ODU3MVoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik03LjgxNDI5IDEwLjYyODZDNy44MTQyOSAxMC42Mjg2IDkuMTE0MjkgMTEuMTE0MyA5LjExNDI5IDEyLjU0MjlDOS4xMTQyOSAxMy45NzE0IDcuODE0MjkgMTQuNDU3MSA3LjgxNDI5IDE4LjQ1NzFDNy44MTQyOSAxNC40NTcxIDYuNTE0MjkgMTMuOTcxNCA2LjUxNDI5IDEyLjU0MjlDNi41MTQyOSAxMS4xMTQzIDcuODE0MjkgMTAuNjI4NiA3LjgxNDI5IDEwLjYyODZaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTcuOTQyOSAxMC42Mjg2QzE3Ljk0MjkgMTAuNjI4NiAxOS4yNDI5IDExLjExNDMgMTkuMjQyOSAxMi41NDI5QzE5LjI0MjkgMTMuOTcxNCAxNy45NDI5IDE0LjQ1NzEgMTcuOTQyOSAxNC40NTcxQzE3Ljk0MjkgMTQuNDU3MSAxNi42NDI5IDEzLjk3MTQgMTYuNjQyOSAxMi41NDI5QzE2LjY0MjkgMTEuMTE0MyAxNy45NDI5IDEwLjYyODYgMTcuOTQyOSAxMC42yODZaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K" class="phantom-logo">Donate via Phantom Wallet</h3>
+        <h3><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDIyQzE3LjUyMjggMjIgMjIgMTcuNTIyOCAyMiAxMkMyMiA2LjQ3NzE1IDE3LjUyMjggMiAxMiAyQzYuNDc3MTUgMiAyIDYuNDc3MTUgMiAxMkMyIDE3LjUyMjggNi40NzcxNSAyMiAxMiAyMloiIGZpbGw9IiM0QkE0RkYiLz4KPHBhdGggZD0iTTEyLjg4NTcgNi41ODU3MUMxMi44ODU3IDYuNTg1NzEgMTUuMDI4NiA7LjM0Mjg2IDEwLjAyODYgOS40ODcxNEMxNS4wMjg2IDExLjYzMTQgMTIuODg1NyAxMi4zODg2IDEyLjg4NTcgMTIuMzg4NkMxMi44ODU3IDEyLjM4ODYgMTAuNzQyOSAxMS42MzE0IDEwLjc0MjkgOS40ODcxNEMxMC43NDI5IDcuMzQyODYgMTIuODg1NyA2LjU4NTcxIDEyLjg4NTcgNi41ODU3MVoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik03LjgxNDI5IDEwLjYyODZDNy44MTQyOSAxMC42Mjg2IDkuMTE0MjkgMTEuMTE0MyA5LjExNDI5IDEyLjU0MjlDOS4xMTQyOSAxMy45NzE0IDcuODE0MjkgMTQuNDU3MSA3LjgxNDI5IDE4LjQ1NzFDNy44MTQyOSAxNC40NTcxIDYuNTE0MjkgMTMuOTcxNCA2LjUxNDI5IDEyLjU0MjlDNi41MTQyOSAxMS4xMTQzIDcuODE0MjkgMTAuNjI4NiA3LjgxNDI5IDEwLjYyODZaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTcuOTQyOSAxMC42Mjg2QzE3Ljk0MjkgMTAuNjI4NiAxOS4yNDI5IDExLjExNDMgMTkuMjQyOSAxMi41NDI5QzE5LjI0MjkgMTMuOTcxNCAxNy45NDI5IDE0LjQ1NzEgMTcuOTQyOSAxNC40NTcxQzE3Ljk0MjkgMTQuNDU3MSAxNi42NDI5IDEzLjk3MTQgMTYuNjQyOSAxMi41NDI5QzE2LjY0MjkgMTEuMTE0MyAxNy45NDI5IDEwLjYyODYgMTcuOTQyOSAxMC42yODZaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K" class="phantom-logo">Donate via Phantom Wallet</h3>
         <div id="donation-status" class="donation-status status-waiting">Preparing transaction...</div>
         <p>Send <span id="donation-amount">0</span> SOL to support zsfcat</p>
         
@@ -321,6 +359,48 @@
                 </div>
                 <div class="command-item">
                     <span class="command-name">/donate_[amount]</span> - <span class="command-desc">Donate SOL to support zsfcat</span>
+                </div>
+                <div class="command-item">
+                    <span class="command-name">/roll</span> - <span class="command-desc">Roll a die (1-6)</span>
+                </div>
+                <div class="command-item">
+                    <span class="command-name">/coinflip</span> - <span class="command-desc">Flip a coin (heads or tails)</span>
+                </div>
+                <div class="command-item">
+                    <span class="command-name">/slots</span> - <span class="command-desc">Simulated slot machine</span>
+                </div>
+                <div class="command-item">
+                    <span class="command-name">/glow</span> - <span class="command-desc">Your next message will glow</span>
+                </div>
+                <div class="command-item">
+                    <span class="command-name">/rainbow</span> - <span class="command-desc">Your next message will be in rainbow colors</span>
+                </div>
+                <div class="command-item">
+                    <span class="command-name">/anon</span> - <span class="command-desc">Your next message will be anonymous</span>
+                </div>
+                <div class="command-item">
+                    <span class="command-name">/clearmsg</span> - <span class="command-desc">Clear any message effects</span>
+                </div>
+                <div class="command-item">
+                    <span class="command-name">/whisper_[username]</span> - <span class="command-desc">Send next message only to a specific user</span>
+                </div>
+                <div class="command-item">
+                    <span class="command-name">/shrug</span> - <span class="command-desc">Posts ¯\_(ツ)_/¯</span>
+                </div>
+                <div class="command-item">
+                    <span class="command-name">/lenny</span> - <span class="command-desc">Posts ( ͡° ͜ʖ ͡°)</span>
+                </div>
+                <div class="command-item">
+                    <span class="command-name">/tableflip</span> - <span class="command-desc">Posts (╯°□°）╯︵ ┻━┻</span>
+                </div>
+                <div class="command-item">
+                    <span class="command-name">/unflip</span> - <span class="command-desc">Posts ┬─┬ ノ( ゜-゜ノ)</span>
+                </div>
+                <div class="command-item">
+                    <span class="command-name">/curse [user]</span> - <span class="command-desc">Doom them with glitchy text</span>
+                </div>
+                <div class="command-item">
+                    <span class="command-name">/bless [user]</span> - <span class="command-desc">Surround them with light</span>
                 </div>
             </div>
         </div>
@@ -360,6 +440,20 @@
         const bannedUsers = {};
         const donorUsers = {};
         const creatorUsers = {};
+        
+        // New variables for command effects
+        let nextMessageEffect = null;
+        let whisperTarget = null;
+        let userStatus = {
+            health: 100,
+            energy: 100,
+            blocked: false,
+            cursed: false,
+            blessed: false,
+            protected: false,
+            fallen: false
+        };
+        let userStatuses = {};
         
         let donationAmount = 0;
         let phantomProvider = null;
@@ -730,6 +824,104 @@
                 }
             }
             
+            // New command processing
+            if (command === '/roll') {
+                const roll = Math.floor(Math.random() * 6) + 1;
+                sendSystemMessage(`${username} rolled a ${roll}`, 'dice');
+                return true;
+            }
+            
+            if (command === '/coinflip') {
+                const result = Math.random() > 0.5 ? 'Heads' : 'Tails';
+                sendSystemMessage(`${username} flipped a coin: ${result}`, 'coin');
+                return true;
+            }
+            
+            if (command === '/slots') {
+                const symbols = ['🍒', '🍋', '🍊', '🍇', '🍉', '💎', '7️⃣'];
+                const result = [
+                    symbols[Math.floor(Math.random() * symbols.length)],
+                    symbols[Math.floor(Math.random() * symbols.length)],
+                    symbols[Math.floor(Math.random() * symbols.length)]
+                ];
+                
+                let message = `${username} spun the slots: [ ${result.join(' | ')} ]`;
+                
+                if (result[0] === result[1] && result[1] === result[2]) {
+                    message += ' JACKPOT! 🎉';
+                } else if (result[0] === result[1] || result[1] === result[2] || result[0] === result[2]) {
+                    message += ' Almost!';
+                }
+                
+                sendSystemMessage(message, 'slots');
+                return true;
+            }
+            
+            if (command === '/glow') {
+                nextMessageEffect = 'glow';
+                addSystemMessage(`${username}'s next message will glow`);
+                return true;
+            }
+            
+            if (command === '/rainbow') {
+                nextMessageEffect = 'rainbow';
+                addSystemMessage(`${username}'s next message will be rainbow`);
+                return true;
+            }
+            
+            if (command === '/anon') {
+                nextMessageEffect = 'anon';
+                addSystemMessage(`${username}'s next message will be anonymous`);
+                return true;
+            }
+            
+            if (command === '/clearmsg') {
+                nextMessageEffect = null;
+                whisperTarget = null;
+                addSystemMessage(`${username} cleared message effects`);
+                return true;
+            }
+            
+            if (parts[0] === '/whisper' && parts.length === 2) {
+                whisperTarget = parts[1];
+                addSystemMessage(`${username} is whispering to ${whisperTarget}`);
+                return true;
+            }
+            
+            if (command === '/shrug') {
+                sendMessageToChat('¯\\_(ツ)_/¯');
+                return true;
+            }
+            
+            if (command === '/lenny') {
+                sendMessageToChat('( ͡° ͜ʖ ͡°)');
+                return true;
+            }
+            
+            if (command === '/tableflip') {
+                sendMessageToChat('(╯°□°）╯︵ ┻━┻');
+                return true;
+            }
+            
+            if (command === '/unflip') {
+                sendMessageToChat('┬─┬ ノ( ゜-゜ノ)');
+                return true;
+            }
+            
+            // RPG-style commands (only keeping curse and bless)
+            const rpgParts = command.split(' ');
+            if (rpgParts[0] === '/curse' && rpgParts.length === 2) {
+                const target = rpgParts[1];
+                sendSystemMessage(`${username} curses ${target} with glitchy text! 💀`, 'curse');
+                return true;
+            }
+            
+            if (rpgParts[0] === '/bless' && rpgParts.length === 2) {
+                const target = rpgParts[1];
+                sendSystemMessage(`${username} blesses ${target} with holy light ✨`, 'bless');
+                return true;
+            }
+            
             if (command === '/help') {
                 showHelpModal();
                 return true;
@@ -814,6 +1006,33 @@
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
 
+        function sendSystemMessage(text, type = 'system') {
+            // Create a temporary message object to send to Firebase
+            const message = {
+                user: "System",
+                text: text,
+                time: new Date().toLocaleTimeString(),
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                type: type
+            };
+            
+            // Add to Firebase
+            db.collection("messages").add(message);
+        }
+
+        function sendMessageToChat(text) {
+            // Create a message object
+            const message = {
+                user: username,
+                text: text,
+                time: new Date().toLocaleTimeString(),
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            // Add to Firebase
+            db.collection("messages").add(message);
+        }
+
         let username = '';
         let screenCapacity = 20;
 
@@ -875,9 +1094,19 @@
                 messageElement.className = 'message';
                 
                 if (msg.user === "System") {
-                    messageElement.innerHTML = `
-                        <div class="system-message">${msg.text}</div>
-                    `;
+                    if (msg.type === 'dice' || msg.type === 'coin' || msg.type === 'slots') {
+                        messageElement.innerHTML = `
+                            <div class="system-message">${msg.text}</div>
+                        `;
+                    } else if (msg.type === 'curse' || msg.type === 'bless') {
+                        messageElement.innerHTML = `
+                            <div class="moderator-message">${msg.text}</div>
+                        `;
+                    } else {
+                        messageElement.innerHTML = `
+                            <div class="system-message">${msg.text}</div>
+                        `;
+                    }
                 } else if (msg.user === "Moderator") {
                     messageElement.innerHTML = `
                         <div class="moderator-message">${msg.text}</div>
@@ -887,13 +1116,37 @@
                     const isCreator = isUserCreator(msg.user);
                     const isDonor = isUserDonor(msg.user);
                     
+                    let displayText = msg.text;
+                    let additionalClasses = '';
+                    
+                    // Apply message effects if they exist
+                    if (msg.effect === 'glow') {
+                        additionalClasses += ' glow-message';
+                    } else if (msg.effect === 'rainbow') {
+                        additionalClasses += ' rainbow-text';
+                    } else if (msg.effect === 'curse') {
+                        additionalClasses += ' glitch-text';
+                    } else if (msg.effect === 'bless') {
+                        additionalClasses += ' blessed-text';
+                    } else if (msg.effect === 'protect') {
+                        additionalClasses += ' protected-text';
+                    }
+                    
+                    // Handle anonymous messages
+                    const displayUser = msg.anonymous ? 'Someone' : msg.user;
+                    
                     messageElement.innerHTML = `
-                        <span class="username ${isCreator ? 'creator-theme' : ''}" style="color: ${userColor}">${msg.user}</span>
+                        <span class="username ${isCreator ? 'creator-theme' : ''} ${additionalClasses}" style="color: ${userColor}">${displayUser}</span>
                         ${isCreator ? '<span class="creator-badge">CREATOR</span>' : ''}
                         ${isDonor ? '<span class="donor-badge">DONOR</span>' : ''}
-                        <span>: ${msg.text}</span>
+                        <span class="${additionalClasses}">: ${displayText}</span>
                         <span class="timestamp">${msg.time}</span>
                     `;
+                    
+                    // Handle whisper messages
+                    if (msg.whisper) {
+                        messageElement.classList.add('whisper-message');
+                    }
                 }
                 
                 messagesContainer.appendChild(messageElement);
@@ -934,12 +1187,31 @@
                         return;
                     }
                     
-                    await db.collection("messages").add({
+                    // Prepare message object with any effects
+                    const messageData = {
                         user: username,
                         text: text,
                         time: new Date().toLocaleTimeString(),
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    });
+                    };
+                    
+                    // Apply message effects
+                    if (nextMessageEffect) {
+                        messageData.effect = nextMessageEffect;
+                        if (nextMessageEffect === 'anon') {
+                            messageData.anonymous = true;
+                        }
+                        nextMessageEffect = null;
+                    }
+                    
+                    // Apply whisper target
+                    if (whisperTarget) {
+                        messageData.whisper = true;
+                        messageData.whisperTarget = whisperTarget;
+                        whisperTarget = null;
+                    }
+                    
+                    await db.collection("messages").add(messageData);
                     
                     input.value = '';
                 } catch (error) {
