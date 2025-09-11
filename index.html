@@ -303,6 +303,14 @@
             color: #aaa;
             font-style: italic;
         }
+        .encrypted-text {
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: blur(0.7px);
+        }
     </style>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -328,7 +336,7 @@
 
     <div class="overlay" id="overlay"></div>
     <div class="donation-modal" id="donation-modal">
-        <h3><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDIyQzE3LjUyMjggMjIgMjIgMTcuNTIyOCAyMiAxMkMyMiA2LjQ3NzE1IDE3LjUyMjggMiAxMiAyQzYuNDc3MTUgMiAyIDYuNDc3MTUgMiAxMkMyIDE3LjUyMjggNi40NzcxNSAyMiAxMiAyMloiIGZpbGw9IiM0QkE0RkYiLz4KPHBhdGggZD0iTTEyLjg4NTcgNi41ODU3MUMxMi44ODU3IDYuNTg1NzEgMTUuMDI4NiA7LjM0Mjg2IDEwLjAyODYgOS40ODcxNEMxNS4wMjg2IDExLjYzMTQgMTIuODg1NyAxMi4zODg2IDEyLjg4NTcgMTIuMzg4NkMxMi44ODU3IDEyLjM4ODYgMTAuNzQyOSAxMS42MzE0IDEwLjc0MjkgOS40ODcxNEMxMC43NDI5IDcuMzQyODYgMTIuODg1NyA2LjU4NTcxIDEyLjg4NTcgNi41ODU3MVoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik03LjgxNDI5IDEwLjYyODZDNy44MTQyOSAxMC42Mjg2IDkuMTE0MjkgMTEuMTE0MyA5LjExNDI5IDEyLjU0MjlDOS4xMTQyOSAxMy45NzE0IDcuODE0MjkgMTQuNDU3MSA3LjgxNDI5IDE4LjQ1NzFDNy44MTQyOSAxNC40NTcxIDYuNTE0MjkgMTMuOTcxNCA2LjUxNDI5IDEyLjU0MjlDNi41MTQyOSAxMS4xMTQzIDcuODE0MjkgMTAuNjI4NiA3LjgxNDI5IDEwLjYyODZaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTcuOTQyOSAxMC42Mjg2QzE3Ljk0MjkgMTAuNjI4NiAxOS4yNDI5IDExLjExNDMgMTkuMjQyOSAxMi41NDI5QzE5LjI0MjkgMTMuOTcxNCAxNy45NDI5IDE0LjQ1NzEgMTcuOTQyOSAxNC40NTcxQzE3Ljk0MjkgMTQuNDU3MSAxNi42NDI5IDEzLjk3MTQgMTYuNjQyOSAxMi41NDI5QzE2LjY0MjkgMTEuMTE0MyAxNy45NDI5IDEwLjYyODYgMTcuOTQyOSAxMC42yODZaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K" class="phantom-logo">Donate via Phantom Wallet</h3>
+        <h3><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCI" class="phantom-logo">Donate via Phantom Wallet</h3>
         <div id="donation-status" class="donation-status status-waiting">Preparing transaction...</div>
         <p>Send <span id="donation-amount">0</span> SOL to support zsfcat</p>
         
@@ -397,10 +405,10 @@
                     <span class="command-name">/unflip</span> - <span class="command-desc">Posts ┬─┬ ノ( ゜-゜ノ)</span>
                 </div>
                 <div class="command-item">
-                    <span class="command-name">/curse [user]</span> - <span class="command-desc">Doom them with glitchy text</span>
+                    <span class="command-name">/curse [user]</span> - <span class="command-desc">Encrypts the user's next message</span>
                 </div>
                 <div class="command-item">
-                    <span class="command-name">/bless [user]</span> - <span class="command-desc">Surround them with light</span>
+                    <span class="command-name">/bless [user]</span> - <span class="command-desc">Makes the user's next message glow</span>
                 </div>
             </div>
         </div>
@@ -444,16 +452,8 @@
         // New variables for command effects
         let nextMessageEffect = null;
         let whisperTarget = null;
-        let userStatus = {
-            health: 100,
-            energy: 100,
-            blocked: false,
-            cursed: false,
-            blessed: false,
-            protected: false,
-            fallen: false
-        };
-        let userStatuses = {};
+        let cursedUsers = {};
+        let blessedUsers = {};
         
         let donationAmount = 0;
         let phantomProvider = null;
@@ -463,6 +463,33 @@
 
         // Updated recipient wallet address
         const recipientAddress = "H5yWNDj9tKahs4B3RKxG4NrPYjkHqgjTkKkFRyQxCVA2";
+
+        // Caesar cipher encryption function
+        function caesarCipher(text, shift) {
+            let result = '';
+            for (let i = 0; i < text.length; i++) {
+                let char = text[i];
+                if (char.match(/[a-z]/i)) {
+                    const code = text.charCodeAt(i);
+                    // Uppercase letters
+                    if (code >= 65 && code <= 90) {
+                        char = String.fromCharCode(((code - 65 + shift) % 26) + 65);
+                    }
+                    // Lowercase letters
+                    else if (code >= 97 && code <= 122) {
+                        char = String.fromCharCode(((code - 97 + shift) % 26) + 97);
+                    }
+                }
+                result += char;
+            }
+            return result;
+        }
+
+        // Encrypt text with a random shift
+        function encryptText(text) {
+            const shift = Math.floor(Math.random() * 25) + 1; // Random shift between 1-25
+            return caesarCipher(text, shift);
+        }
 
         function setCookie(name, value, days) {
             const expires = new Date();
@@ -908,17 +935,19 @@
                 return true;
             }
             
-            // RPG-style commands (only keeping curse and bless)
+            // RPG-style commands
             const rpgParts = command.split(' ');
             if (rpgParts[0] === '/curse' && rpgParts.length === 2) {
                 const target = rpgParts[1];
-                sendSystemMessage(`${username} curses ${target} with glitchy text! 💀`, 'curse');
+                cursedUsers[target] = true;
+                sendSystemMessage(`${username} curses ${target}! Their next message will be encrypted. 💀`, 'curse');
                 return true;
             }
             
             if (rpgParts[0] === '/bless' && rpgParts.length === 2) {
                 const target = rpgParts[1];
-                sendSystemMessage(`${username} blesses ${target} with holy light ✨`, 'bless');
+                blessedUsers[target] = true;
+                sendSystemMessage(`${username} blesses ${target}! Their next message will glow. ✨`, 'bless');
                 return true;
             }
             
@@ -1132,6 +1161,12 @@
                         additionalClasses += ' protected-text';
                     }
                     
+                    // Handle encrypted messages from cursed users
+                    if (msg.encrypted) {
+                        displayText = encryptText(displayText);
+                        additionalClasses += ' encrypted-text';
+                    }
+                    
                     // Handle anonymous messages
                     const displayUser = msg.anonymous ? 'Someone' : msg.user;
                     
@@ -1209,6 +1244,18 @@
                         messageData.whisper = true;
                         messageData.whisperTarget = whisperTarget;
                         whisperTarget = null;
+                    }
+                    
+                    // Check if user is cursed
+                    if (cursedUsers[username]) {
+                        messageData.encrypted = true;
+                        delete cursedUsers[username];
+                    }
+                    
+                    // Check if user is blessed
+                    if (blessedUsers[username]) {
+                        messageData.effect = 'glow';
+                        delete blessedUsers[username];
                     }
                     
                     await db.collection("messages").add(messageData);
