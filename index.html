@@ -478,9 +478,6 @@ const firebaseConfig = {
             }
             return username;
         }
-// --- Ad Bot Logic ---
-
-// Array of ad messages and their interval in seconds
 const adBots = [
     {
         name: "ONE_SEVEN",
@@ -490,32 +487,29 @@ const adBots = [
             { text: "🎉 Invite your friends and keep the chat active!", intervalSec: 90 },
         ],
         currentIndex: 1,
-        lastSent: 0 // timestamp
+        lastSent: 0 
     },
     {
-        name: "AdBot2",
+        name: "ADVERTISING",
         avatar: "📢",
         messages: [
-            { text: "💡 Did you know? You can use /slots for a fun slot machine game!", intervalSec: 120 },
-            { text: "🔒 Stay safe! Never share your wallet seed with anyone.", intervalSec: 150 },
+            { text: "This could be your ad! Visit one-seven-17.github.io/advertise/ to learn more.", intervalSec: 1800 },
         ],
-        currentIndex: 0,
+        currentIndex: 1,
         lastSent: 0
     }
 ];
 
-// Function to send an ad bot message
 function sendAdBotMessage(bot, message) {
     db.collection("messages").add({
         user: bot.name,
         text: message.text,
         time: new Date().toLocaleTimeString(),
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        isAdBot: true // Mark as ad bot for special styling if desired
+        isAdBot: true 
     });
 }
 
-// Function to start all ad bots
 function startAdBots() {
     adBots.forEach(bot => {
         function scheduleNext() {
@@ -530,13 +524,9 @@ function startAdBots() {
         scheduleNext();
     });
 }
-
-// Start ad bots after everything is loaded (wait a few seconds if needed)
 window.addEventListener('DOMContentLoaded', function() {
     setTimeout(startAdBots, 5000); // 5s delay before starting ad bots
 });
-
-// Optional: In your rendering logic, style ad bot messages differently (e.g. in your message rendering function)
         function getColorForUsername(username) {
             if (username === 'THE_CREATOR') {
                 return '#00FFFF';
@@ -1150,6 +1140,7 @@ window.addEventListener('DOMContentLoaded', function() {
                         <span class="username ${isCreator ? 'creator-theme' : ''} ${additionalClasses}" style="color: ${userColor}">${displayUser}</span>
                         ${isCreator ? '<span class="creator-badge">CREATOR</span>' : ''}
                         ${isDonor ? '<span class="donor-badge">DONOR</span>' : ''}
+                        ${isAdBot ? '<span class="ad-badge">AD</span>' : ''}
                         <span class="${additionalClasses}">: ${displayText}</span>
                         <span class="timestamp">${msg.time}</span>
                     `;
