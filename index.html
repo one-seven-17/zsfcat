@@ -408,7 +408,73 @@ const firebaseConfig = {
 };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+<script>
+// ================== BOT SYSTEM ==================
+// Edit this array to change bots and their behavior.
+let chatBots = [
+    {
+        name: "TriviaBot",
+        messages: [
+            "Did you know? The honeybee is the only insect that produces food eaten by humans.",
+            "Trivia: A group of flamingos is called a 'flamboyance'."
+        ],
+        intervalMinutes: 5 // sends a message every 5 minutes
+    },
+    {
+        name: "Motivator",
+        messages: [
+            "You are doing great! Keep it up!",
+            "Remember to take breaks and stay hydrated."
+        ],
+        intervalMinutes: 10 // every 10 minutes
+    }
+];
 
+// You can add/remove/change bots above without touching code below.
+
+// Utility to pick a random message from the bot's list
+function pickBotMessage(bot) {
+    if (Array.isArray(bot.messages)) {
+        return bot.messages[Math.floor(Math.random() * bot.messages.length)];
+    }
+    return bot.messages;
+}
+
+function startBots() {
+    if (!window.botIntervals) window.botIntervals = [];
+    // Clear previous intervals (if any)
+    window.botIntervals.forEach(i => clearInterval(i));
+    window.botIntervals = [];
+    chatBots.forEach(bot => {
+        // Immediately send a message on load, then at intervals
+        const send = () => {
+            db.collection("messages").add({
+                user: bot.name,
+                text: pickBotMessage(bot),
+                time: new Date().toLocaleTimeString(),
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                type: 'bot'
+            });
+        };
+        send(); // first one on page load
+        let interval = setInterval(send, bot.intervalMinutes * 60 * 1000);
+        window.botIntervals.push(interval);
+    });
+}
+
+// If you want to allow dynamic changing of bots in dev tools:
+window.setChatBots = function (newBots) {
+    chatBots = newBots;
+    startBots();
+};
+
+// Call startBots() after firebase and chat are initialized
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        if (typeof db !== "undefined") startBots();
+    }, 2000); // Give time for Firebase to init
+});
+</script>
         const usernameColors = [
             '#FF6B6B', '#4ECDC4', '#FFE66D', '#6B5B95', '#88D8B0',
             '#FFA69E', '#70D6FF', '#F9C80E', '#A4036F', '#048BA8',
