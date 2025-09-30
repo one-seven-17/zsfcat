@@ -478,7 +478,65 @@ const firebaseConfig = {
             }
             return username;
         }
+// --- Ad Bot Logic ---
 
+// Array of ad messages and their interval in seconds
+const adBots = [
+    {
+        name: "AdBot1",
+        avatar: "🤖",
+        messages: [
+            { text: "✨ Try our premium features! Type /donate_0.1 to support zsfcat!", intervalSec: 60 },
+            { text: "🎉 Invite your friends and keep the chat active!", intervalSec: 90 },
+        ],
+        currentIndex: 0,
+        lastSent: 0 // timestamp
+    },
+    {
+        name: "AdBot2",
+        avatar: "📢",
+        messages: [
+            { text: "💡 Did you know? You can use /slots for a fun slot machine game!", intervalSec: 120 },
+            { text: "🔒 Stay safe! Never share your wallet seed with anyone.", intervalSec: 150 },
+        ],
+        currentIndex: 0,
+        lastSent: 0
+    }
+];
+
+// Function to send an ad bot message
+function sendAdBotMessage(bot, message) {
+    db.collection("messages").add({
+        user: bot.name,
+        text: message.text,
+        time: new Date().toLocaleTimeString(),
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        isAdBot: true // Mark as ad bot for special styling if desired
+    });
+}
+
+// Function to start all ad bots
+function startAdBots() {
+    adBots.forEach(bot => {
+        function scheduleNext() {
+            const msg = bot.messages[bot.currentIndex];
+            setTimeout(() => {
+                sendAdBotMessage(bot, msg);
+                bot.lastSent = Date.now();
+                bot.currentIndex = (bot.currentIndex + 1) % bot.messages.length;
+                scheduleNext();
+            }, msg.intervalSec * 1000);
+        }
+        scheduleNext();
+    });
+}
+
+// Start ad bots after everything is loaded (wait a few seconds if needed)
+window.addEventListener('DOMContentLoaded', function() {
+    setTimeout(startAdBots, 5000); // 5s delay before starting ad bots
+});
+
+// Optional: In your rendering logic, style ad bot messages differently (e.g. in your message rendering function)
         function getColorForUsername(username) {
             if (username === 'THE_CREATOR') {
                 return '#00FFFF';
